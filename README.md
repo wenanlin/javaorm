@@ -92,16 +92,82 @@ application.yml
 ```xml
 spring:
 # 配置数据源信息
-datasource:
+  datasource:
 # 配置数据源类型
-type: com.zaxxer.hikari.HikariDataSource
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      driver-class-name: com.mysql.cj.jdbc.Driver
 # 配置连接数据库信息
-driver-class-name: com.mysql.cj.jdbc.Driver
-url: jdbc:mysql://localhost:3306/mybatis_plus?characterEncoding=utf-
-8&useSSL=false
-username: root
-password: 123456
+    url: jdbc:mysql://192.168.0.146:3306/mybatis_plus?characterEncoding=utf-8&useSSL=false
+    username: root
+    password: Kyland@123
+server:
+  port: 9999
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+
+
 ```
 
+##### Mapper源码
 
+```java
+
+public interface BaseMapper<T> extends Mapper<T> {
+    int insert(T entity);
+
+    int deleteById(Serializable id);
+
+    int deleteById(T entity);
+
+    int deleteByMap(@Param("cm") Map<String, Object> columnMap);
+
+    int delete(@Param("ew") Wrapper<T> queryWrapper);
+
+    int deleteBatchIds(@Param("coll") Collection<?> idList);
+
+    int updateById(@Param("et") T entity);
+
+    int update(@Param("et") T entity, @Param("ew") Wrapper<T> updateWrapper);
+
+    T selectById(Serializable id);
+
+    List<T> selectBatchIds(@Param("coll") Collection<? extends Serializable> idList);
+
+    List<T> selectByMap(@Param("cm") Map<String, Object> columnMap);
+
+    default T selectOne(@Param("ew") Wrapper<T> queryWrapper) {
+        List<T> ts = this.selectList(queryWrapper);
+        if (CollectionUtils.isNotEmpty(ts)) {
+            if (ts.size() != 1) {
+                throw ExceptionUtils.mpe("One record is expected, but the query result is multiple records", new Object[0]);
+            } else {
+                return ts.get(0);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    default boolean exists(Wrapper<T> queryWrapper) {
+        Long count = this.selectCount(queryWrapper);
+        return null != count && count > 0L;
+    }
+
+    Long selectCount(@Param("ew") Wrapper<T> queryWrapper);
+
+    List<T> selectList(@Param("ew") Wrapper<T> queryWrapper);
+
+    List<Map<String, Object>> selectMaps(@Param("ew") Wrapper<T> queryWrapper);
+
+    List<Object> selectObjs(@Param("ew") Wrapper<T> queryWrapper);
+
+    <P extends IPage<T>> P selectPage(P page, @Param("ew") Wrapper<T> queryWrapper);
+
+    <P extends IPage<Map<String, Object>>> P selectMapsPage(P page, @Param("ew") Wrapper<T> queryWrapper);
+}
+```
 

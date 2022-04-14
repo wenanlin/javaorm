@@ -1,3 +1,4 @@
+
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
@@ -6,3 +7,31 @@ spring:
     url: jdbc:mysql://192.168.0.146:3306/mybatis_plus?characterEncoding=utf-8&useSSL=false
     username: root
     password: Kyland@123
+server:
+  port: 9999
+
+
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
